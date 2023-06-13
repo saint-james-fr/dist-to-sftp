@@ -1,26 +1,11 @@
+import { helpHandler, skipHandler } from "./optionsHandlers.js";
+
 let args;
-export let skip;
+export const options = {};
 
-const skipHandler = () => {
-  skip = true;
-};
-
-const helpHandler = () => {
-  console.log("\nUsage: dist-to-sftp [options]\n");
-  console.log("Options:");
-  Object.keys(options).forEach((option) => {
-    const { description } = options[option];
-    console.log(`  ${option.padEnd(20)}${description}`);
-  });
-}
-
-// Define an object to map options to handler functions
-const options = {
-  "-h": { handler: helpHandler, description: "Show this message" },
-  "--help": { handler: helpHandler, description: "Show this message" },
-  "-s": { handler: skipHandler, description: "Skip the .env file setup" },
-  "--skip": { handler: skipHandler, description: "Skip the .env file setup" },
-};
+// Generate option objects using the createOption helper function
+createOption(["-h", "--help"], helpHandler, "Shows this message");
+createOption(["-s", "--skip"], skipHandler, "Skips the .env file setup");
 
 export const handleOptions = () => {
   if (process.argv.length > 2) {
@@ -46,4 +31,12 @@ export const handleOptions = () => {
       console.log(`⚠️    Unknown option: ${arg}`);
     }
   }
+};
+
+// Helper function to generate an option object
+function createOption (aliases, handler, description) {
+  const optionObject = { aliases, handler, description };
+  aliases.forEach((alias) => {
+    options[alias] = optionObject;
+  });
 };
