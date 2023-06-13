@@ -1,6 +1,6 @@
 {
   "name": "dist-to-sftp",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "This package is used to upload a dist folder to a ftp server.",
   "main": "index.js",
   "type": "module",
@@ -8,10 +8,10 @@
     "start": "node src/index.js"
   },
   "bin": {
-    "dist-to-ftp": "./src/index.js"
+    "dist-to-sftp": "./src/index.js"
   },
   "keywords": [
-    "ftp"
+    "sftp", "deployment", "dist", "folder", "upload", "ftp", "server", "cli"
   ],
   "author": "Maxence Robinet",
   "license": "ISC",

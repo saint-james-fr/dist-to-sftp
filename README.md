@@ -15,26 +15,20 @@ Subsequently, it will upload the contents of the dist folder located at the root
 
 
 ##  Installation
-To install dist-to-ftp, you can use npm or yarn:
+To install dist-to-sftp, you can use npm or yarn:
 
 ```bash
-npm install --save-dev dist-to-ftp
+npm install --save-dev dist-to-sftp
 ```
 
 ```bash
-yarn add -D dist-to-ftp
+yarn add -D dist-to-sftp
 ```
 
 Once installed, you can run the tool using the following command:
 
 ```bash
-yarn dist-to-ftp
-```
-
-or
-
-``` bash
-npm run dist-to-ftp
+dist-to-sftp
 ```
 
 The tool will guide you through the setup process, prompting you to enter the required FTP credentials and path.
