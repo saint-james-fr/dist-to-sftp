@@ -27,7 +27,7 @@ export async function initializeEnv() {
 
   const shouldModifyAll = await askYesNoQuestion(
     rl,
-    ".env file and FTP variables founds. Do you want to change the values?"
+    ".env file and FTP variables founds. Do you want to change them?"
   );
   if (!shouldModifyAll) {
     rl.close();
@@ -60,7 +60,7 @@ function askYesNoQuestion(rl, question) {
 function checkAndUpdateGitIgnore(rootDir, envPath) {
   const gitPath = path.join(rootDir, '.git');
   if (!fs.existsSync(gitPath)) {
-    console.log('No Git repository found. Don\'t forget to add .env to your .gitignore file.');
+    console.log('⚠️ No Git repository found. Make sure you initialize a Git repository and add .env to your .gitignore file.');
     return;
   }
 
@@ -68,13 +68,16 @@ function checkAndUpdateGitIgnore(rootDir, envPath) {
   if (fs.existsSync(gitIgnorePath)) {
     const gitIgnoreContent = fs.readFileSync(gitIgnorePath, 'utf8');
     if (!gitIgnoreContent.includes('.env')) {
+      console.log('✅ Adding .env to your .gitignore file. Make sure to commit the changes.');
       fs.appendFileSync(gitIgnorePath, '\n.env\n', 'utf8');
+    } else {
+      console.log('ℹ️ .env is already included in your .gitignore file.');
     }
   } else {
+    console.log('✏️ Creating .gitignore file and adding .env to it. Make sure to commit the changes.');
     fs.writeFileSync(gitIgnorePath, '.env\n', 'utf8');
   }
 }
-
 
 function askQuestion(rl, question, existingValue) {
   return new Promise((resolve) => {
