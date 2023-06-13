@@ -3,6 +3,14 @@ import { helpHandler, skipHandler, keepHandler, remotePathHandler, distPathHandl
 let args;
 export const options = {};
 
+// Helper function to generate an option object
+function createOption(aliases, handler, description, hasValue = false) {
+  const optionObject = { aliases, handler, description, hasValue };
+  aliases.forEach((alias) => {
+    options[alias] = optionObject;
+  });
+}
+
 // Generate option objects using the createOption helper function
 createOption(["-h", "--help"], helpHandler, "Shows this message");
 createOption(["-s", "--skip"], skipHandler, "Skips the .env file setup");
@@ -24,16 +32,16 @@ export const handleOptions = () => {
 
     if (option) {
       const handler = option.handler;
-      const hasValue = option.hasOwnProperty("hasValue");
+      const hasValue = option.hasValue; 
 
       if (hasValue) {
-        const value = args[i + 1]; // Get the next argument as the value for the option
+        const value = args[i + 1];
         if (!value) {
           console.log(`⚠️    Missing value for option: ${arg}`);
           continue;
         }
         handler(value);
-        i++; // Skip the next argument since it has been consumed as the value
+        i++;
       } else {
         handler();
       }
@@ -42,11 +50,3 @@ export const handleOptions = () => {
     }
   }
 };
-
-// Helper function to generate an option object
-function createOption(aliases, handler, description, hasValue = false) {
-  const optionObject = { aliases, handler, description, hasValue };
-  aliases.forEach((alias) => {
-    options[alias] = optionObject;
-  });
-}

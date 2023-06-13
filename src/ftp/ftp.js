@@ -3,26 +3,26 @@ import dotenv from "dotenv";
 import path from "path";
 import fs from "fs";
 
-export async function connectAndPerformOperations(options) {
-  // destructuring options
-  const { envCheck, deleteRemote } = options;
+export async function connectAndPerformOperations(ready) {
+  if (!ready) return;
 
   // load environment variables
   dotenv.config();
-  const host = process.env.OPTION_SFTP_HOST ||  process.env.SFTP_HOST;
-  const username = process.env.OPTION_SFTP_USERNAME || process.env.SFTP_USERNAME;
-  const password = process.env.OPTION_SFTP_PASSWORD || process.env.SFTP_PASSWORD;
+  const host = process.env.OPTION_SFTP_HOST || process.env.SFTP_HOST;
+  const username =
+    process.env.OPTION_SFTP_USERNAME || process.env.SFTP_USERNAME;
+  const password =
+    process.env.OPTION_SFTP_PASSWORD || process.env.SFTP_PASSWORD;
   const remotePath = process.env.OPTION_SFTP_PATH || process.env.SFTP_PATH;
 
   // check if dist folder exists
   const rootPath = process.cwd();
-  const localDistPath = process.env.OPTION_DIST_PATH || path.resolve(rootPath, "./dist");
+  const localDistPath =
+    process.env.OPTION_DIST_PATH || path.resolve(rootPath, "./dist");
   const localDistExists = fs.existsSync(localDistPath);
 
   if (host && username && password && remotePath) {
-    console.log(
-      "\n❌    Some credentials are missing.\n"
-    );
+    console.log("\n❌    Some credentials are missing.\n");
     return;
   }
   if (!localDistExists) {
@@ -89,9 +89,10 @@ export async function connectAndPerformOperations(options) {
       await Promise.all(deletePromises);
     };
 
-    if (deleteRemote) await deleteFilesInDirectory(remotePath);
-
-    console.log("🗑️    Existing files in the remote directory removed.\n");
+    if (process.env.DELETE_REMOTE) {
+      await deleteFilesInDirectory(remotePath);
+      console.log("🗑️    Existing files in the remote directory removed.\n");
+    }
 
     const uploadDirectory = async (localPath, remotePath) => {
       const localFiles = fs.readdirSync(localPath);

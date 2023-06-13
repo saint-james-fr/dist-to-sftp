@@ -1,7 +1,6 @@
 import { options } from "./options.js";
 
 export let abort;
-export let deleteRemote = true;
 
 export const helpHandler = () => {
   console.log("\nUsage: dist-to-sftp [options]\n");
@@ -23,7 +22,7 @@ export const skipHandler = () => {
 };
 
 export const keepHandler = () => {
-  deleteRemote = false;
+  process.env.DELETE_REMOTE = false;
 };
 
 export const remotePathHandler = (value) => {
