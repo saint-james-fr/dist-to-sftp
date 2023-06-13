@@ -1,4 +1,4 @@
 .env
 .gitignore
 yarn-error.log
-
+dist/
