@@ -17,10 +17,11 @@ export async function connectAndPerformOperations(ready) {
 
   // check if dist folder exists
   const rootPath = process.cwd();
-  const localDistPath =
-    path.resolve(rootPath, process.env.OPTION_DIST_PATH) ||
-    path.resolve(rootPath, "./dist");
-  const localDistExists = fs.existsSync(localDistPath);
+  let distPath = process.env.OPTION_DIST_PATH || "./dist";
+  distPath = path.resolve(rootPath, distPath)
+  const localDistExists = fs.existsSync(distPath);
+
+  console.log(process.env.DELETE_REMOTE)
 
   if (!(host && username && password && remotePath)) {
     console.log("\n❌    Some credentials are missing.\n");
@@ -90,9 +91,9 @@ export async function connectAndPerformOperations(ready) {
       await Promise.all(deletePromises);
     };
 
-    if (process.env.DELETE_REMOTE) {
+    if (!process.env.DELETE_REMOTE) {
       await deleteFilesInDirectory(remotePath);
-      console.log("🗑️    Existing files in the remote directory removed.\n");
+      console.log("🗑️     Existing files in the remote directory removed.\n");
     }
 
     const uploadDirectory = async (localPath, remotePath) => {
@@ -126,7 +127,7 @@ export async function connectAndPerformOperations(ready) {
       );
     };
 
-    await uploadDirectory(localDistPath, remotePath);
+    await uploadDirectory(distPath, remotePath);
 
     console.log(
       '📂    Contents of the local "dist" folder uploaded to the remote directory.\n'

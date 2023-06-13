@@ -1,29 +1,31 @@
 # dist-to-sftp
 
-dist-to-ftp is a simple command-line tool that enables you to connect to an SFTP server. Although it is currently in its rudimentary stage.
+dist-to-ftp is a simple command-line tool that enables you to connect to an SFTP server.
 
-This straightforward tool simplifies the process of deploying your files to the desired location on the SFTP server.
+This straightforward tool simplifies the process of deploying your website or data to the desired location on the SFTP server.
 
-- It begins by helping you set up your .env file and store your FTP credentials. Also, it prompts you to specify the path you intend to use.
-- Then it starts the FTP script.
+Basic Usage:
 
-Please note that when executed, the script will remove **all existing files** and directories on the FTP server that correspond to the provided path.
+- Start by setting up your FTP credentials in .env file - this can be skipped, see the options.
+- Delete and upload all files to remote path folder.
 
-Subsequently, it will upload the contents of the dist folder located at the root of your project.
-
-
+**Beware!**
+the script will indeed remove **all existing files** and directories on the server remote path.
+See options to keep them.
 
 
 ##  Installation
 To install dist-to-sftp, you can use npm or yarn:
 
 ```bash
+# Using npm
 npm install --save-dev dist-to-sftp
-```
-
-```bash
+# Using yarn
 yarn add -D dist-to-sftp
 ```
+
+## Usage
+
 
 Once installed, you can run the tool using the following command:
 
@@ -31,7 +33,7 @@ Once installed, you can run the tool using the following command:
 dist-to-sftp
 ```
 
-The tool will guide you through the setup process, prompting you to enter the required FTP credentials and path.
+Setting up env files is just filling up these environment variables. It will check for the presence of a .env file and of these variables inside.
 
 ``` plain
 SFTP_HOST=
@@ -40,7 +42,32 @@ SFTP_PASSWORD=
 SFTP_PATH=
 ```
 
-Ensure that you have the necessary permissions and correct values in your .env file to establish a successful SFTP connection.
+## Options
+The following options can be passed as command-line arguments:
+
+```plain
+-h, --help: Shows the help message.
+-s, --skip: Skips the .env file setup.
+-k, --keep: Doesn't delete files on the remote server (default: true).
+-r, --remote: Specifies the remote path (requires a value).
+-d, --dist: Specifies the local dist path (requires a value).
+--host: Specifies the SFTP host (requires a value).
+-u, --username: Specifies the SFTP username (requires a value).
+-p, --password: Specifies the SFTP password (requires a value).
+```
+
+
+## Example
+
+```bash
+# Basic usage
+dist-to-sftp -k
+
+# A more advance usage
+dist-to-sftp -r /www/my_website/ -d ./my_dirst_folder --host ftp.fake.hosting.domain.net -u my_username -p my_password
+```
+
+
 
 ## Dependencies
 The dist-to-ftp tool has the following dependencies:

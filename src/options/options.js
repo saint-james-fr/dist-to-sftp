@@ -12,13 +12,6 @@ import {
 let args;
 export const options = {};
 
-// Helper function to generate an option object
-function createOption(aliases, handler, description, hasValue = false) {
-  const optionObject = { aliases, handler, description, hasValue };
-  aliases.forEach((alias) => {
-    options[alias] = optionObject;
-  });
-}
 
 // Generate option objects using the createOption helper function
 
@@ -32,7 +25,7 @@ createOption(["-s", "--skip"], skipHandler, "Skips the .env file setup");
 createOption(
   ["-k", "--keep"],
   keepHandler,
-  "Don't delete files on remote. Default: true"
+  "Don't delete files on remote."
 );
 
 // remote path
@@ -96,3 +89,11 @@ export const handleOptions = () => {
     }
   }
 };
+
+// Helper function to generate an option object
+function createOption(aliases, handler, description, hasValue = false) {
+  const optionObject = { aliases, handler, description, hasValue };
+  aliases.forEach((alias) => {
+    options[alias] = optionObject;
+  });
+}
