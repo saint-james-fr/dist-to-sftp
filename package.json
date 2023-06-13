@@ -1,12 +1,11 @@
 {
-  "name": "dist-to-ftp",
-  "version": "1.0.0",
-  "description": "This is meant to upload your dist folder after building with tools like Vite or Webpack to your FTP.",
+  "name": "dist-to-sftp",
+  "version": "0.1.0",
+  "description": "This package is used to upload a dist folder to a ftp server.",
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "start": "node src/index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node src/index.js"
   },
   "bin": {
     "dist-to-ftp": "./src/index.js"
