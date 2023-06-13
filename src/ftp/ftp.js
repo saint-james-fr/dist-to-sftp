@@ -1,4 +1,3 @@
-import { fileURLToPath } from "url";
 import { Client } from "ssh2";
 import dotenv from "dotenv";
 import path from "path";
@@ -10,15 +9,16 @@ const host = process.env.SFTP_HOST;
 const username = process.env.SFTP_USERNAME;
 const password = process.env.SFTP_PASSWORD;
 const remotePath = process.env.SFTP_PATH;
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const localDistPath = path.resolve(__dirname, "../dist");
+const rootPath = process.cwd();
+const localDistPath = path.resolve(rootPath, "./dist");
 
-async function connectAndPerformOperations() {
+export async function connectAndPerformOperations(ready) {
+  if (!ready) return;
+
   const conn = new Client();
 
   try {
-    console.log("Connecting to the SSH/SFTP server...");
+    console.log("\n🔌    Connecting to the SSH/SFTP server...\n");
     await new Promise((resolve, reject) => {
       conn.on("ready", resolve);
       conn.on("error", reject);
@@ -31,7 +31,7 @@ async function connectAndPerformOperations() {
       });
     });
 
-    console.log("SSH/SFTP connection established.");
+    console.log("🔧    SSH/SFTP connection established.\n");
 
     const sftp = await new Promise((resolve, reject) => {
       conn.sftp((err, sftp) => {
@@ -40,7 +40,7 @@ async function connectAndPerformOperations() {
       });
     });
 
-    console.log("SFTP session initialized.");
+    console.log("✅    SFTP session initialized.\n");
 
     const deleteFilesInDirectory = async (remotePath) => {
       const list = await new Promise((resolve, reject) => {
@@ -74,7 +74,7 @@ async function connectAndPerformOperations() {
 
     await deleteFilesInDirectory(remotePath);
 
-    console.log("Existing files in the remote directory removed.");
+    console.log("🗑️    Existing files in the remote directory removed.\n");
 
     const uploadDirectory = async (localPath, remotePath) => {
       const localFiles = fs.readdirSync(localPath);
@@ -110,30 +110,30 @@ async function connectAndPerformOperations() {
     await uploadDirectory(localDistPath, remotePath);
 
     console.log(
-      'Contents of the local "dist" folder uploaded to the remote directory.'
+      '📂    Contents of the local "dist" folder uploaded to the remote directory.\n'
     );
 
-    const localHtaccessPath = path.resolve(__dirname, "../.htaccess");
+    // const localHtaccessPath = path.resolve(__dirname, "../.htaccess");
 
-    await new Promise((resolve, reject) => {
-      sftp.fastPut(
-        localHtaccessPath,
-        path.join(remotePath, ".htaccess"),
-        (err) => {
-          if (err) reject(err);
-          else resolve();
-        }
-      );
-    });
+    // await new Promise((resolve, reject) => {
+    //   sftp.fastPut(
+    //     localHtaccessPath,
+    //     path.join(remotePath, ".htaccess"),
+    //     (err) => {
+    //       if (err) reject(err);
+    //       else resolve();
+    //     }
+    //   );
+    // });
 
-    console.log('".htaccess" file uploaded to the remote directory.');
+    // console.log('".htaccess" file uploaded to the remote directory.');
 
     sftp.end();
     conn.end();
 
-    console.log("SFTP connection closed.");
+    console.log("🔒    SFTP connection closed.\n");
   } catch (error) {
-    console.error("SFTP connection failed:", error);
+    console.error("❌    SFTP connection failed:\n", error);
   } finally {
     conn.end();
   }
