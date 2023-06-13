@@ -14,7 +14,7 @@ export const cleanDirectory = async (sftp, remotePath) => {
 
     if (item.longname.startsWith("d")) {
       // Item is a directory
-      return deleteFilesInDirectory(itemPath).then(() => sftp.rmdir(itemPath));
+      return cleanDirectory(itemPath).then(() => sftp.rmdir(itemPath));
     } else {
       // Item is a file
       return new Promise((resolve, reject) => {
