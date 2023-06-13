@@ -18,16 +18,17 @@ export async function connectAndPerformOperations(ready) {
   // check if dist folder exists
   const rootPath = process.cwd();
   const localDistPath =
-    process.env.OPTION_DIST_PATH || path.resolve(rootPath, "./dist");
+    path.resolve(rootPath, process.env.OPTION_DIST_PATH) ||
+    path.resolve(rootPath, "./dist");
   const localDistExists = fs.existsSync(localDistPath);
 
-  if (host && username && password && remotePath) {
+  if (!(host && username && password && remotePath)) {
     console.log("\n❌    Some credentials are missing.\n");
     return;
   }
   if (!localDistExists) {
     console.log(
-      "\n❌    No dist directory found. Please run your build first.\n"
+      "\n❌    No dist directory found. Please make sure you provided correct path from root of your project. \nEx './dist'.\n"
     );
     return;
   }

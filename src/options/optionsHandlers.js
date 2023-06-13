@@ -25,7 +25,6 @@ export const keepHandler = () => {
 
 export const remotePathHandler = (value) => {
   process.env.OPTION_SFTP_PATH = value;
-  process.env.SKIP_ENV_SETUP = true;
 };
 
 export const distPathHandler = (value) => {
@@ -34,15 +33,12 @@ export const distPathHandler = (value) => {
 
 export const usernameHandler = (value) => {
   process.env.OPTION_SFTP_USERNAME = value;
-  process.env.SKIP_ENV_SETUP = true;
 };
 
 export const passwordHandler = (value) => {
   process.env.OPTION_SFTP_PASSWORD = value;
-  process.env.SKIP_ENV_SETUP = true;
 };
 
 export const hostHandler = (value) => {
   process.env.OPTION_SFTP_HOST = value;
-  process.env.SKIP_ENV_SETUP = true;
 };

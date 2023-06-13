@@ -21,27 +21,43 @@ function createOption(aliases, handler, description, hasValue = false) {
 }
 
 // Generate option objects using the createOption helper function
+
+//help
 createOption(["-h", "--help"], helpHandler, "Shows this message");
+
+// skip
 createOption(["-s", "--skip"], skipHandler, "Skips the .env file setup");
+
+// keep
 createOption(
   ["-k", "--keep"],
   keepHandler,
   "Don't delete files on remote. Default: true"
 );
+
+// remote path
 createOption(
   ["-r", "--remote"],
   remotePathHandler,
   "Specify the remote path",
   true
 );
+
+// dist path
 createOption(["-d", "--dist"], distPathHandler, "Specify the dist path", true);
+
+// host
 createOption(["--host"], hostHandler, "Specify the host", true);
+
+// username
 createOption(
   ["-u", "--username"],
   usernameHandler,
   "Specify the username",
   true
 );
+
+// password
 createOption(
   ["-p", "--password"],
   passwordHandler,
