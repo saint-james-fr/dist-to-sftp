@@ -2,7 +2,7 @@
 
 // scripts
 import { initializeEnv } from "./env/env.js";
-import { connectAndPerformOperations } from "./ftp/ftp.js";
+import { connectAndPerformOperations } from "./sftp/sftp.js";
 
 // options
 import { handleOptions } from "./options/options.js";

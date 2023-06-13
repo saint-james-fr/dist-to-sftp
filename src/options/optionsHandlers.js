@@ -42,3 +42,9 @@ export const passwordHandler = (value) => {
 export const hostHandler = (value) => {
   process.env.OPTION_SFTP_HOST = value;
 };
+
+export const filesHandler = (values) => {
+
+  // values is an array of strings
+  process.env.OPTION_FILES = JSON.stringify(values);
+}
