@@ -1,7 +1,5 @@
 import { options } from "./options.js";
 
-export let abort;
-
 export const helpHandler = () => {
   console.log("\nUsage: dist-to-sftp [options]\n");
   console.log("Options:");
@@ -14,7 +12,7 @@ export const helpHandler = () => {
   Object.entries(uniqueOptions).forEach(([description, option]) => {
     console.log(`  ${option.padEnd(20)}${description}`);
   });
-  abort = true;
+  process.exit();
 };
 
 export const skipHandler = () => {

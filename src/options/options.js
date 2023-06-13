@@ -1,4 +1,13 @@
-import { helpHandler, skipHandler, keepHandler, remotePathHandler, distPathHandler, hostHandler, usernameHandler, passwordHandler} from "./optionsHandlers.js";
+import {
+  helpHandler,
+  skipHandler,
+  keepHandler,
+  remotePathHandler,
+  distPathHandler,
+  hostHandler,
+  usernameHandler,
+  passwordHandler,
+} from "./optionsHandlers.js";
 
 let args;
 export const options = {};
@@ -14,12 +23,31 @@ function createOption(aliases, handler, description, hasValue = false) {
 // Generate option objects using the createOption helper function
 createOption(["-h", "--help"], helpHandler, "Shows this message");
 createOption(["-s", "--skip"], skipHandler, "Skips the .env file setup");
-createOption(["-k", "--keep"], keepHandler, "Don't delete files on remote. Default: true");
-createOption(["-r", "--remote"], remotePathHandler, "Specify the remote path", true);
+createOption(
+  ["-k", "--keep"],
+  keepHandler,
+  "Don't delete files on remote. Default: true"
+);
+createOption(
+  ["-r", "--remote"],
+  remotePathHandler,
+  "Specify the remote path",
+  true
+);
 createOption(["-d", "--dist"], distPathHandler, "Specify the dist path", true);
 createOption(["--host"], hostHandler, "Specify the host", true);
-createOption(["-u", "--username"], usernameHandler, "Specify the username", true);
-createOption(["-p", "--password"], passwordHandler, "Specify the password", true);
+createOption(
+  ["-u", "--username"],
+  usernameHandler,
+  "Specify the username",
+  true
+);
+createOption(
+  ["-p", "--password"],
+  passwordHandler,
+  "Specify the password",
+  true
+);
 
 export const handleOptions = () => {
   if (process.argv.length > 2) {
@@ -32,7 +60,7 @@ export const handleOptions = () => {
 
     if (option) {
       const handler = option.handler;
-      const hasValue = option.hasValue; 
+      const hasValue = option.hasValue;
 
       if (hasValue) {
         const value = args[i + 1];
@@ -47,6 +75,8 @@ export const handleOptions = () => {
       }
     } else {
       console.log(`⚠️    Unknown option: ${arg}`);
+      console.log("Stopping execution...");
+      process.exit();
     }
   }
 };
