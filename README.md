@@ -45,8 +45,8 @@ Ensure that you have the necessary permissions and correct values in your .env f
 ## Dependencies
 The dist-to-ftp tool has the following dependencies:
 
-dotenv - version 16.1.4
-ssh2 - version 1.13.0
+- dotenv - version 16.1.4
+- ssh2 - version 1.13.0
 
 These dependencies will be automatically installed when you install dist-to-ftp.
 
