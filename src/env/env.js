@@ -1,10 +1,9 @@
 import fs from "fs";
 import readline from "readline";
 import path from "path";
-import { packageDirectory } from "pkg-dir";
 
 export async function initializeEnv() {
-  const rootDir = await packageDirectory();
+  const rootDir = process.cwd();;
   const envPath = path.join(rootDir, ".env");
 
   const envVariables = [
