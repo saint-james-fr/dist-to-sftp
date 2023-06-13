@@ -3,16 +3,16 @@ import dotenv from "dotenv";
 import path from "path";
 import fs from "fs";
 
-dotenv.config();
-
-const host = process.env.SFTP_HOST;
-const username = process.env.SFTP_USERNAME;
-const password = process.env.SFTP_PASSWORD;
-const remotePath = process.env.SFTP_PATH;
-const rootPath = process.cwd();
-const localDistPath = path.resolve(rootPath, "./dist");
-
 export async function connectAndPerformOperations(ready) {
+  dotenv.config();
+
+  const host = process.env.SFTP_HOST;
+  const username = process.env.SFTP_USERNAME;
+  const password = process.env.SFTP_PASSWORD;
+  const remotePath = process.env.SFTP_PATH;
+  const rootPath = process.cwd();
+  const localDistPath = path.resolve(rootPath, "./dist");
+  
   if (!ready) return;
 
   const conn = new Client();
