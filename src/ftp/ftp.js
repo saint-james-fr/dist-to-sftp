@@ -91,7 +91,7 @@ export async function connectAndPerformOperations(ready) {
       await Promise.all(deletePromises);
     };
 
-    if (!process.env.DELETE_REMOTE) {
+    if (process.env.DELETE_REMOTE !== "false") {
       await deleteFilesInDirectory(remotePath);
       console.log("🗑️     Existing files in the remote directory removed.\n");
     }
