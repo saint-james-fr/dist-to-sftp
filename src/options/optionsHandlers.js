@@ -2,10 +2,7 @@ import { options } from "./options.js";
 
 export let skip;
 export let abort;
-
-export const skipHandler = () => {
-  skip = true;
-};
+export let deleteRemote = true;
 
 export const helpHandler = () => {
   console.log("\nUsage: dist-to-sftp [options]\n");
@@ -20,4 +17,12 @@ export const helpHandler = () => {
     console.log(`  ${option.padEnd(20)}${description}`);
   });
   abort = true;
+};
+
+export const skipHandler = () => {
+  skip = true;
+};
+
+export const keepHandler = () => {
+  deleteRemote = false;
 };

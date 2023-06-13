@@ -3,18 +3,28 @@ import dotenv from "dotenv";
 import path from "path";
 import fs from "fs";
 
-export async function connectAndPerformOperations(ready) {
-  dotenv.config();
+export async function connectAndPerformOperations(options) {
+  // destructuring options
+  const { envCheck, deleteRemote } = options;
 
+  // load environment variables
+  dotenv.config();
   const host = process.env.SFTP_HOST;
   const username = process.env.SFTP_USERNAME;
   const password = process.env.SFTP_PASSWORD;
   const remotePath = process.env.SFTP_PATH;
+
+  // check if dist folder exists
   const rootPath = process.cwd();
   const localDistPath = path.resolve(rootPath, "./dist");
   const localDistExists = fs.existsSync(localDistPath);
 
-  if (!ready) return;
+  if (!envCheck) {
+    console.log(
+      "\n❌    No .env file set up. Please put your credentials.\n"
+    );
+    return;
+  }
   if (!localDistExists) {
     console.log(
       "\n❌    No dist directory found. Please run your build first.\n"
@@ -79,7 +89,7 @@ export async function connectAndPerformOperations(ready) {
       await Promise.all(deletePromises);
     };
 
-    await deleteFilesInDirectory(remotePath);
+    if (deleteRemote) await deleteFilesInDirectory(remotePath);
 
     console.log("🗑️    Existing files in the remote directory removed.\n");
 

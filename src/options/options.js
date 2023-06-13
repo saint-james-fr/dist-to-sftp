@@ -1,4 +1,4 @@
-import { helpHandler, skipHandler } from "./optionsHandlers.js";
+import { helpHandler, skipHandler, keepHandler } from "./optionsHandlers.js";
 
 let args;
 export const options = {};
@@ -6,6 +6,7 @@ export const options = {};
 // Generate option objects using the createOption helper function
 createOption(["-h", "--help"], helpHandler, "Shows this message");
 createOption(["-s", "--skip"], skipHandler, "Skips the .env file setup");
+createOption(["-k", "--keep"], keepHandler, "Don't delete files before uploading");
 
 export const handleOptions = () => {
   if (process.argv.length > 2) {
