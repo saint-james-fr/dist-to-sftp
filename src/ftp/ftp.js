@@ -9,19 +9,19 @@ export async function connectAndPerformOperations(options) {
 
   // load environment variables
   dotenv.config();
-  const host = process.env.SFTP_HOST;
-  const username = process.env.SFTP_USERNAME;
-  const password = process.env.SFTP_PASSWORD;
-  const remotePath = process.env.SFTP_PATH;
+  const host = process.env.OPTION_SFTP_HOST ||  process.env.SFTP_HOST;
+  const username = process.env.OPTION_SFTP_USERNAME || process.env.SFTP_USERNAME;
+  const password = process.env.OPTION_SFTP_PASSWORD || process.env.SFTP_PASSWORD;
+  const remotePath = process.env.OPTION_SFTP_PATH || process.env.SFTP_PATH;
 
   // check if dist folder exists
   const rootPath = process.cwd();
-  const localDistPath = path.resolve(rootPath, "./dist");
+  const localDistPath = process.env.OPTION_DIST_PATH || path.resolve(rootPath, "./dist");
   const localDistExists = fs.existsSync(localDistPath);
 
-  if (!envCheck) {
+  if (host && username && password && remotePath) {
     console.log(
-      "\n❌    No .env file set up. Please put your credentials.\n"
+      "\n❌    Some credentials are missing.\n"
     );
     return;
   }

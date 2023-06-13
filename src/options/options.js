@@ -1,4 +1,4 @@
-import { helpHandler, skipHandler, keepHandler } from "./optionsHandlers.js";
+import { helpHandler, skipHandler, keepHandler, remotePathHandler, distPathHandler, hostHandler, usernameHandler, passwordHandler} from "./optionsHandlers.js";
 
 let args;
 export const options = {};
@@ -6,7 +6,12 @@ export const options = {};
 // Generate option objects using the createOption helper function
 createOption(["-h", "--help"], helpHandler, "Shows this message");
 createOption(["-s", "--skip"], skipHandler, "Skips the .env file setup");
-createOption(["-k", "--keep"], keepHandler, "Don't delete files before uploading");
+createOption(["-k", "--keep"], keepHandler, "Don't delete files on remote. Default: true");
+createOption(["-r", "--remote"], remotePathHandler, "Specify the remote path", true);
+createOption(["-d", "--dist"], distPathHandler, "Specify the dist path", true);
+createOption(["--host"], hostHandler, "Specify the host", true);
+createOption(["-u", "--username"], usernameHandler, "Specify the username", true);
+createOption(["-p", "--password"], passwordHandler, "Specify the password", true);
 
 export const handleOptions = () => {
   if (process.argv.length > 2) {
@@ -19,10 +24,14 @@ export const handleOptions = () => {
 
     if (option) {
       const handler = option.handler;
-      const hasValue = option.hasOwnProperty("value");
+      const hasValue = option.hasOwnProperty("hasValue");
 
       if (hasValue) {
         const value = args[i + 1]; // Get the next argument as the value for the option
+        if (!value) {
+          console.log(`⚠️    Missing value for option: ${arg}`);
+          continue;
+        }
         handler(value);
         i++; // Skip the next argument since it has been consumed as the value
       } else {
@@ -35,9 +44,9 @@ export const handleOptions = () => {
 };
 
 // Helper function to generate an option object
-function createOption (aliases, handler, description) {
-  const optionObject = { aliases, handler, description };
+function createOption(aliases, handler, description, hasValue = false) {
+  const optionObject = { aliases, handler, description, hasValue };
   aliases.forEach((alias) => {
     options[alias] = optionObject;
   });
-};
+}

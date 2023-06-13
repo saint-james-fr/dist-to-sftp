@@ -6,7 +6,7 @@ import { connectAndPerformOperations } from "./ftp/ftp.js";
 
 // options
 import { handleOptions } from "./options/options.js";
-import { abort, skip, deleteRemote } from "./options/optionsHandlers.js";
+import { abort, deleteRemote } from "./options/optionsHandlers.js";
 
 // main function
 async function run() {
@@ -18,7 +18,7 @@ async function run() {
   }
 
   if (abort) return;
-  if (skip) {
+  if (process.env.SKIP_ENV_SETUP) {
     ftpOptions.envCheck = true;
     connectAndPerformOperations(ftpOptions);
     return;

@@ -1,6 +1,5 @@
 import { options } from "./options.js";
 
-export let skip;
 export let abort;
 export let deleteRemote = true;
 
@@ -20,9 +19,33 @@ export const helpHandler = () => {
 };
 
 export const skipHandler = () => {
-  skip = true;
+  process.env.SKIP_ENV_SETUP = true;
 };
 
 export const keepHandler = () => {
   deleteRemote = false;
+};
+
+export const remotePathHandler = (value) => {
+  process.env.OPTION_SFTP_PATH = value;
+  process.env.SKIP_ENV_SETUP = true;
+};
+
+export const distPathHandler = (value) => {
+  process.env.OPTION_DIST_PATH = value;
+};
+
+export const usernameHandler = (value) => {
+  process.env.OPTION_SFTP_USERNAME = value;
+  process.env.SKIP_ENV_SETUP = true;
+};
+
+export const passwordHandler = (value) => {
+  process.env.OPTION_SFTP_PASSWORD = value;
+  process.env.SKIP_ENV_SETUP = true;
+};
+
+export const hostHandler = (value) => {
+  process.env.OPTION_SFTP_HOST = value;
+  process.env.SKIP_ENV_SETUP = true;
 };
