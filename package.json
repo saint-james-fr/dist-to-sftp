@@ -1,0 +1,25 @@
+{
+  "name": "dist-to-ftp",
+  "version": "1.0.0",
+  "description": "This is meant to upload your dist folder after building with tools like Vite or Webpack to your FTP.",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "bin": {
+    "dist-to-ftp": "./index.js"
+  },
+  "keywords": [
+    "ftp"
+  ],
+  "author": "Maxence Robinet",
+  "license": "ISC",
+  "devDependencies": {},
+  "dependencies": {
+    "dotenv": "^16.1.4",
+    "pkg-dir": "^7.0.0",
+    "ssh2": "^1.13.0"
+  }
+}
