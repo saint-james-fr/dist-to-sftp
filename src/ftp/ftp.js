@@ -12,8 +12,15 @@ export async function connectAndPerformOperations(ready) {
   const remotePath = process.env.SFTP_PATH;
   const rootPath = process.cwd();
   const localDistPath = path.resolve(rootPath, "./dist");
-  
+  const localDistExists = fs.existsSync(localDistPath);
+
   if (!ready) return;
+  if (!localDistExists) {
+    console.log(
+      "\n❌    No dist directory found. Please run your build first.\n"
+    );
+    return;
+  }
 
   const conn = new Client();
 
