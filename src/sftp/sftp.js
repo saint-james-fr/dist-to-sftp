@@ -39,7 +39,7 @@ export async function connectAndPerformOperations(ready) {
   };
 
   const configSFTP = async (conn) => {
-    new Promise((resolve, reject) => {
+    return new Promise((resolve, reject) => {
       conn.sftp((err, sftp) => {
         if (err) reject(err);
         else resolve(sftp);

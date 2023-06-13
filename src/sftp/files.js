@@ -14,7 +14,7 @@ export const cleanDirectory = async (sftp, remotePath) => {
 
     if (item.longname.startsWith("d")) {
       // Item is a directory
-      return cleanDirectory(itemPath).then(() => sftp.rmdir(itemPath));
+      return cleanDirectory(sftp, itemPath).then(() => sftp.rmdir(itemPath));
     } else {
       // Item is a file
       return new Promise((resolve, reject) => {
@@ -47,7 +47,7 @@ export const uploadDirectory = async (sftp, localPath, remotePath) => {
           });
         });
 
-        await uploadDirectory(localFilePath, remoteFilePath);
+        await uploadDirectory(sftp, localFilePath, remoteFilePath);
       } else {
         await new Promise((resolve, reject) => {
           sftp.fastPut(localFilePath, remoteFilePath, (err) => {
@@ -76,7 +76,7 @@ export const uploadFiles = async (sftp, files, localPath, remotePath) => {
           });
         });
 
-        await uploadDirectory(localFilePath, remoteFilePath);
+        await uploadDirectory(sftp, localFilePath, remoteFilePath);
       } else {
         await new Promise((resolve, reject) => {
           sftp.fastPut(localFilePath, remoteFilePath, (err) => {
