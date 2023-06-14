@@ -85,8 +85,7 @@ export const handleOptions = (args) => {
 
     // if nextArgIndex == index, thre are no values for the --files option
     if (nextArgIndex === index) {
-      console.log(`⚠️    Missing value for option: ${args[index]}`);
-      return;
+      throw new Error(logger.missingValueForOption(args[index]));
     }
 
     const filesPaths = argsCopy.slice(index, nextArgIndex);
@@ -115,18 +114,16 @@ export const handleOptions = (args) => {
       if (hasValue) {
         let value = args[i + 1];
         if (!value) {
-          console.log(`⚠️    Missing value for option: ${arg}`);
-          continue;
+          throw new Error(logger.missingValueForOption(arg));
+        } else {
+          handler(value);
+          i++;
         }
-        handler(value);
-        i++;
       } else {
         handler();
       }
     } else {
-      console.log(`⚠️    Unknown option: ${arg}`);
-      console.log("Stopping execution...");
-      process.exit();
+      throw new Error(logger.unknownOption(arg));
     }
   }
 };

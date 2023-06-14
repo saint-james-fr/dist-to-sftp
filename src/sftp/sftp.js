@@ -1,5 +1,6 @@
 import { cleanDirectory, uploadDirectory, uploadFiles } from "./files.js";
 import { runValidations } from "./validations.js";
+import {logger } from "../utils/logger.js";
 
 import { Client } from "ssh2";
 import dotenv from "dotenv";
@@ -54,31 +55,37 @@ export async function connectAndPerformOperations(ready) {
 
 
   // FLOW
-  if (!runValidations(host, username, password, remotePath, distPath)) return;
+  try {
+    runValidations(host, username, password, remotePath, distPath);
+  } catch (err) {
+    console.log(err.message);
+    console.log(logger.stopping);
+    process.exit();
+  }
 
   const connexion = new Client();
 
   try {
-    console.log("\n🔌    Connecting to the SSH/SFTP server...\n");
+    console.log(logger.connectInit);
 
     // CONNEXION
     await connect(connexion);
-    console.log("🔧    SSH/SFTP connection established.\n");
+    console.log(logger.connectSuccess);
 
     // SFTP SESSION
     const sftp = await configSFTP(connexion);
-    console.log("✅    SFTP session initialized.\n");
+    console.log(logger.sftpSuccess);
 
     // OPTION --KEEP OR -K
     if (process.env.DELETE_REMOTE !== "false") {
       await cleanDirectory(sftp, remotePath);
-      console.log("🗑️     Existing files on the server removed.\n");
+      console.log(logger.removeSuccess);
     }
 
     // UPLOAD DIST FOLDER
     await uploadDirectory(sftp, distPath, remotePath);
     console.log(
-      '📂    Contents of the local "dist" folder uploaded to the server.\n'
+      distUploadSuccess
     );
 
     // UPLOAD --FILES
@@ -86,15 +93,15 @@ export async function connectAndPerformOperations(ready) {
       const files = JSON.parse(process.env.OPTION_FILES);
       await uploadFiles(sftp, files, rootPath, remotePath);
       console.log(
-        '📂    Files passed via  -f/--files options uploaded to the server.\n'
+        logger.filesUploadSuccess
       );
     }
 
     disconnect(sftp, connexion);
 
-    console.log("🔒    SFTP connection closed.\n");
+    console.log(logger.closeSuccess);
   } catch (error) {
-    console.error("❌    SFTP connection failed:\n", error);
+    console.error(logger.sftpError(error));
   } finally {
     connexion.end();
   }

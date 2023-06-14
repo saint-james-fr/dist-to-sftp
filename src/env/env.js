@@ -2,6 +2,8 @@ import fs from "fs";
 import readline from "readline";
 import path from "path";
 
+import { logger } from "../utils/logger.js";
+
 export function initializeEnv() {
   return new Promise(async (resolve) => {
     const rootDir = process.cwd();
@@ -15,7 +17,6 @@ export function initializeEnv() {
     ];
 
     let existingEnv = {};
-    let shouldModifyAll = false;
     const rl = readline.createInterface({
       input: process.stdin,
       output: process.stdout,
@@ -32,19 +33,16 @@ export function initializeEnv() {
       );
 
       if (isAllVariablesSet) {
-        console.log(
-          "\n✅    All variables are already set in the .env file.\n"
-        );
+        console.log(logger.envSuccess);
         rl.close();
         resolve(true); // Operation completed successfully
         return;
       } else {
-        console.log("\n⚠️    Some variables are missing in the .env file.\n");
+        console.log(logger.missingEnvVariables);
       }
-
     } else {
       // Ask if the user wants to create a new .env file
-      console.log("\n⚠️    No .env file found. Creating a new one.\n");
+      console.log(missingEnvFile);
     }
 
     // Prompt the user to enter values for each environment variable
@@ -66,23 +64,11 @@ export function initializeEnv() {
     resolve(true); // Operation completed successfully
   });
 
-  // Function to ask a yes/no question and resolve with a boolean answer
-  function askYesNoQuestion(rl, question) {
-    return new Promise((resolve) => {
-      rl.question(`${question} (yY/nN): `, (answer) => {
-        const lowerCaseAnswer = answer.toLowerCase().trim();
-        resolve(lowerCaseAnswer === "y" || lowerCaseAnswer === "yes");
-      });
-    });
-  }
-
   // Function to check and update .gitignore file
   function checkAndUpdateGitIgnore(rootDir, envPath) {
     const gitPath = path.join(rootDir, ".git");
     if (!fs.existsSync(gitPath)) {
-      console.log(
-        "⚠️    No Git repository found.\nMake sure you initialize a Git repository and add .env to your .gitignore file.\n"
-      );
+      console.log(logger.missingGitRepository);
       return;
     }
 
@@ -91,17 +77,17 @@ export function initializeEnv() {
       const gitIgnoreContent = fs.readFileSync(gitIgnorePath, "utf8");
       if (!gitIgnoreContent.includes(".env")) {
         console.log(
-          "✅    Adding .env to your .gitignore file. Make sure to commit the changes.\n"
+          logger.gitIgnoreSuccess
         );
         fs.appendFileSync(gitIgnorePath, "\n.env\n", "utf8");
       } else {
         console.log(
-          "ℹ️    .env is already included in your .gitignore file.\n"
+          logger.gitIgnoreInfo
         );
       }
     } else {
       console.log(
-        "✏️    Creating .gitignore file and adding .env to it. Make sure to commit the changes.\n"
+        logger.gitIgnoreCreate
       );
       fs.writeFileSync(gitIgnorePath, ".env\n", "utf8");
     }
