@@ -18,13 +18,14 @@ export async function connectAndPerformOperations(ready) {
     process.env.OPTION_SFTP_PASSWORD || process.env.SFTP_PASSWORD;
   const remotePath = process.env.OPTION_SFTP_PATH || process.env.SFTP_PATH;
 
-  //root path of the project
+  // define root path of the project
   const rootPath = process.cwd();
 
-  // dist path
+  // define dist path
   let distPath = process.env.OPTION_DIST_PATH || "./dist";
   distPath = path.resolve(rootPath, distPath);
 
+  // connect to the server
   const connect = async (conn) => {
     return new Promise((resolve, reject) => {
       conn.on("ready", resolve);
@@ -39,6 +40,7 @@ export async function connectAndPerformOperations(ready) {
     });
   };
 
+  // establish SFTP
   const configSFTP = async (conn) => {
     return new Promise((resolve, reject) => {
       conn.sftp((err, sftp) => {
@@ -48,6 +50,7 @@ export async function connectAndPerformOperations(ready) {
     });
   };
 
+  // disconnect
   const disconnect = (sftp, conn) => {
     sftp.end();
     conn.end();

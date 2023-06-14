@@ -44,7 +44,6 @@ export const hostHandler = (value) => {
 };
 
 export const filesHandler = (values) => {
-
   // values is an array of strings
   process.env.OPTION_FILES = JSON.stringify(values);
 }

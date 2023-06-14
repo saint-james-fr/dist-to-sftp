@@ -8,7 +8,7 @@ const getDirectoryList = (sftp, remotePath) => {
         console.error(logger.getDirectoryListError(err));
         reject(err);
       } else {
-        resolve();
+        resolve(list);
       }
     });
   });

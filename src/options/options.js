@@ -10,7 +10,8 @@ import {
   filesHandler,
 } from "./optionsHandlers.js";
 
-let args;
+import { logger } from "../utils/logger.js";
+
 export const options = {};
 
 // Generate option objects using the createOption helper function
@@ -66,8 +67,9 @@ export const handleOptions = (args) => {
   // options contains the --files option, which can have multiple values
   // so we need to handle it differently
   let argsCopy;
-  let optionsTotTreat;
+  let optionsLeft;
 
+  // -f --files option
   if (args.includes("-f") || args.includes("--files")) {
     // find index
     const index = args.findIndex((arg) => arg === "-f" || arg === "--files");
@@ -101,16 +103,17 @@ export const handleOptions = (args) => {
     }
   }
 
-  optionsTotTreat = argsCopy || args;
-  // Parse and handle the remaining command-line optionsTotTreat
-  for (let i = 0; i < optionsTotTreat.length; i++) {
-    const arg = optionsTotTreat[i];
+  optionsLeft = argsCopy || args;
+  // Parse and handle the remaining command-line options left
+  for (let i = 0; i < optionsLeft.length; i++) {
+    const arg = optionsLeft[i];
     const option = options[arg];
 
     if (option) {
       const handler = option.handler;
       const hasValue = option.hasValue;
 
+      // hanles options with values
       if (hasValue) {
         let value = args[i + 1];
         if (!value) {
