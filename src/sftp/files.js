@@ -1,6 +1,8 @@
 import path from "path";
 import fs from "fs";
 
+import { logger } from "../utils/logger.js";
+
 const getDirectoryList = (sftp, remotePath) => {
   return new Promise((resolve, reject) => {
     sftp.readdir(remotePath, (err, list) => {
@@ -42,21 +44,26 @@ const deleteFile = (sftp, remotePath) => {
 };
 
 export const cleanDirectory = async (sftp, remotePath) => {
-  const list = await getDirectoryList(sftp, remotePath);
+  try {
+    const list = await getDirectoryList(sftp, remotePath);
 
-  const deletePromises = list.map((item) => {
-    const itemPath = path.join(remotePath, item.filename);
+    const deletePromises = list.map((item) => {
+      const itemPath = path.join(remotePath, item.filename);
 
-    if (item.longname.startsWith("d")) {
-      // Item is a directory
-      return deleteDirectory(sftp, itemPath);
-    } else {
-      // Item is a file
-      return deleteFile(sftp, itemPath);
-    }
-  });
+      if (item.longname.startsWith("d")) {
+        // Item is a directory
+        return deleteDirectory(sftp, itemPath);
+      } else {
+        // Item is a file
+        return deleteFile(sftp, itemPath);
+      }
+    });
 
-  await Promise.all(deletePromises);
+    await Promise.all(deletePromises);
+  } catch (error) {
+    console.error(logger.cleanDirectoryError(error));
+    throw error;
+  }
 };
 
 const uploadFile = async (sftp, localPath, remotePath) => {
@@ -87,37 +94,46 @@ const createDirectory = (sftp, remotePath) => {
 
 export const uploadDirectory = async (sftp, directory, remote) => {
   const localFiles = fs.readdirSync(directory);
+  try {
+    await Promise.all(
+      localFiles.map(async (file) => {
+        const relativePath = path.join(directory, file);
+        const remotePath = path.join(remote, file);
+        const stats = fs.statSync(relativePath);
 
-  await Promise.all(
-    localFiles.map(async (file) => {
-      const relativePath = path.join(directory, file);
-      const remotePath = path.join(remote, file);
-      const stats = fs.statSync(relativePath);
-
-      if (stats.isDirectory()) {
-        await createDirectory(sftp, remotePath);
-        await uploadDirectory(sftp, relativePath, remotePath);
-      } else {
-        await uploadFile(sftp, relativePath, remotePath);
-      }
-    })
-  );
+        if (stats.isDirectory()) {
+          await createDirectory(sftp, remotePath);
+          await uploadDirectory(sftp, relativePath, remotePath);
+        } else {
+          await uploadFile(sftp, relativePath, remotePath);
+        }
+      })
+    );
+  } catch (error) {
+    console.error(logger.uploadDirectoryError(error));
+    throw error;
+  }
 };
 
 export const uploadFiles = async (sftp, filesArray, directory, remote) => {
-  await Promise.all(
-    filesArray.map(async (file) => {
-      let remotePath;
-      const relativePath = path.join(directory, file);
-      const stats = fs.statSync(relativePath);
-      if (stats.isDirectory()) {
-        remotePath = path.join(remote, file);
-        await createDirectory(sftp, remotePath);
-        await uploadDirectory(sftp, relativePath, remotePath);
-      } else {
-        remotePath = path.join(remote, relativePath.split("/").slice(-1)[0]);
-        await uploadFile(sftp, relativePath, remotePath);
-      }
-    })
-  );
+  try {
+    await Promise.all(
+      filesArray.map(async (file) => {
+        let remotePath;
+        const relativePath = path.join(directory, file);
+        const stats = fs.statSync(relativePath);
+        if (stats.isDirectory()) {
+          remotePath = path.join(remote, file);
+          await createDirectory(sftp, remotePath);
+          await uploadDirectory(sftp, relativePath, remotePath);
+        } else {
+          remotePath = path.join(remote, relativePath.split("/").slice(-1)[0]);
+          await uploadFile(sftp, relativePath, remotePath);
+        }
+      })
+    );
+  } catch (error) {
+    console.log(logger.uploadFilesError(error));
+    throw error;
+  }
 };
