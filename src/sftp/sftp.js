@@ -85,7 +85,7 @@ export async function connectAndPerformOperations(ready) {
     // UPLOAD DIST FOLDER
     await uploadDirectory(sftp, distPath, remotePath);
     console.log(
-      distUploadSuccess
+      logger.distUploadSuccess
     );
 
     // UPLOAD --FILES
