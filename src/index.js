@@ -12,7 +12,10 @@ async function run() {
   // Defaults Options
   process.env.DELETE_REMOTE = true;
 
-  handleOptions();
+  if (process.argv.length > 2) {
+    const args = process.argv.slice(2);
+    handleOptions(args);
+  }
 
   if (process.env.SKIP_ENV_SETUP) {
     connectAndPerformOperations(true);

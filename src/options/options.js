@@ -7,12 +7,11 @@ import {
   hostHandler,
   usernameHandler,
   passwordHandler,
-  filesHandler
+  filesHandler,
 } from "./optionsHandlers.js";
 
 let args;
 export const options = {};
-
 
 // Generate option objects using the createOption helper function
 
@@ -23,11 +22,7 @@ createOption(["-h", "--help"], helpHandler, "Shows this message");
 createOption(["-s", "--skip"], skipHandler, "Skips the .env file setup");
 
 // keep
-createOption(
-  ["-k", "--keep"],
-  keepHandler,
-  "Don't delete files on remote."
-);
+createOption(["-k", "--keep"], keepHandler, "Don't delete files on remote.");
 
 // remote path
 createOption(
@@ -60,28 +55,32 @@ createOption(
 );
 
 // files
-createOption(["-f", "--files"], filesHandler, "Specify multiple file paths", true);
+createOption(
+  ["-f", "--files"],
+  filesHandler,
+  "Specify multiple file paths",
+  true
+);
 
-
-export const handleOptions = () => {
-  if (process.argv.length > 2) {
-    args = process.argv.slice(2);
-  }
-
+export const handleOptions = (args) => {
   // options contains the --files option, which can have multiple values
   // so we need to handle it differently
+  let argsCopy;
+  let optionsTotTreat;
 
   if (args.includes("-f") || args.includes("--files")) {
     // find index
     const index = args.findIndex((arg) => arg === "-f" || arg === "--files");
+    // copy array to avoid mutating the original
+    argsCopy = [...args];
     // remove the option from the args array
-    args.splice(index, 1);
+    argsCopy.splice(index, 1);
     // find the next element of arg beginning with "-"
-    let nextArgIndex = args.findIndex((arg) => arg.startsWith("-"));
+    let nextArgIndex = argsCopy.findIndex((arg) => arg.startsWith("-"));
     // if nextArgIndex == undefined there are no more options
-    // so we set it to the length of the args array
+    // so we set it to the length of the argsCopy array
     if (nextArgIndex === -1) {
-      nextArgIndex = args.length;
+      nextArgIndex = argsCopy.length;
     }
 
     // if nextArgIndex == index, thre are no values for the --files option
@@ -89,18 +88,25 @@ export const handleOptions = () => {
       console.log(`⚠️    Missing value for option: ${args[index]}`);
       return;
     }
-    const filesPaths = args.slice(index, nextArgIndex);
-    console.log("filesPaths", filesPaths)
+
+    const filesPaths = argsCopy.slice(index, nextArgIndex);
+    console.log("filesPaths", filesPaths);
     // remove the file paths from the args array
-    args.splice(index, nextArgIndex - index);
+    argsCopy.splice(index, nextArgIndex - index);
     // pass the file paths to the filesHandler as an array
     filesHandler(filesPaths);
-  }
-  console.log("args", args)
 
-  // Parse and handle the remaining command-line arguments
-  for (let i = 0; i < args.length; i++) {
-    const arg = args[i];
+    if (argsCopy.length > 0) {
+      handleOptions(argsCopy);
+    } else {
+      return;
+    }
+  }
+
+  optionsTotTreat = argsCopy || args;
+  // Parse and handle the remaining command-line optionsTotTreat
+  for (let i = 0; i < optionsTotTreat.length; i++) {
+    const arg = optionsTotTreat[i];
     const option = options[arg];
 
     if (option) {
@@ -108,22 +114,12 @@ export const handleOptions = () => {
       const hasValue = option.hasValue;
 
       if (hasValue) {
-        const value = args[i + 1];
+        let value = args[i + 1];
         if (!value) {
           console.log(`⚠️    Missing value for option: ${arg}`);
           continue;
         }
-        if (arg === '-f' || arg === '--files') {
-          const fileValues = [];
-          while (value && !options[value]) {
-            fileValues.push(value);
-            i++;
-            value = args[i + 1];
-          }
-          handler(fileValues.join(','));
-        } else {
-          handler(value);
-        }
+        handler(value);
         i++;
       } else {
         handler();
@@ -134,7 +130,6 @@ export const handleOptions = () => {
       process.exit();
     }
   }
-
 };
 
 // Helper function to generate an option object

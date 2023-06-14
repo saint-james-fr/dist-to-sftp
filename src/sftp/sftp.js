@@ -84,7 +84,8 @@ export async function connectAndPerformOperations(ready) {
     // UPLOAD --FILES
     if (process.env.OPTION_FILES) {
       const files = JSON.parse(process.env.OPTION_FILES);
-      await uploadFiles(sftp, files, remotePath);
+      console.log(files, "files")
+      await uploadFiles(sftp, files, rootPath, remotePath);
       console.log(
         '📂    Contents of the local "dist" folder uploaded to the remote directory.\n'
       );

@@ -29,28 +29,30 @@ export const cleanDirectory = async (sftp, remotePath) => {
   await Promise.all(deletePromises);
 };
 
-export const uploadDirectory = async (sftp, localPath, remotePath) => {
-  const localFiles = fs.readdirSync(localPath);
+export const uploadDirectory = async (sftp, directory, remote) => {
+  const localFiles = fs.readdirSync(directory);
 
   await Promise.all(
     localFiles.map(async (file) => {
-      const localFilePath = path.join(localPath, file);
-      const remoteFilePath = path.join(remotePath, file);
+      const relativePath = path.join(directory, file);
+      const remotePath = path.join(remote, file);
 
-      const fileStats = fs.statSync(localFilePath);
+      const stats = fs.statSync(relativePath);
 
-      if (fileStats.isDirectory()) {
+      if (stats.isDirectory()) {
         await new Promise((resolve, reject) => {
-          sftp.mkdir(remoteFilePath, (err) => {
+          sftp.mkdir(remotePath, (err) => {
             if (err) reject(err);
             else resolve();
           });
         });
 
-        await uploadDirectory(sftp, localFilePath, remoteFilePath);
+        await uploadDirectory(sftp, relativePath, remotePath);
       } else {
         await new Promise((resolve, reject) => {
-          sftp.fastPut(localFilePath, remoteFilePath, (err) => {
+          sftp.fastPut(relativePath, remotePath, (err) => {
+            console.log("remotePath from DIRECTORY", remotePath)
+            console.log("relativePath from DIRECTORY", relativePath)
             if (err) reject(err);
             else resolve();
           });
@@ -60,26 +62,33 @@ export const uploadDirectory = async (sftp, localPath, remotePath) => {
   );
 };
 
-export const uploadFiles = async (sftp, files, localPath, remotePath) => {
+export const uploadFiles = async (sftp, filesArray, directory, remote) => {
+  console.log("filesArray", filesArray);
+  console.log("directory", directory);
+
   await Promise.all(
-    files.map(async (file) => {
-      const localFilePath = path.join(localPath, file);
-      const remoteFilePath = path.join(remotePath, file);
+    filesArray.map(async (file) => {
+      const relativePath = path.join(directory, file);
 
-      const fileStats = fs.statSync(localFilePath);
-
-      if (fileStats.isDirectory()) {
+      console.log("relativePath", relativePath);
+      const stats = fs.statSync(relativePath);
+      console.log("stats", stats);
+      console.log("remote", remote)
+      if (stats.isDirectory()) {
         await new Promise((resolve, reject) => {
-          sftp.mkdir(remoteFilePath, (err) => {
+          sftp.mkdir(remote, (err) => {
             if (err) reject(err);
             else resolve();
           });
         });
 
-        await uploadDirectory(sftp, localFilePath, remoteFilePath);
+        await uploadDirectory(sftp, relativePath, remote);
       } else {
         await new Promise((resolve, reject) => {
-          sftp.fastPut(localFilePath, remoteFilePath, (err) => {
+          let remotePath = path.join(remote, relativePath.split("/").slice(-1)[0]);
+          console.log("remotePath FROM FILE", remotePath)
+          console.log("RELATIVE PATH FROM FILE", relativePath)
+          sftp.fastPut(relativePath, remotePath, (err) => {
             if (err) reject(err);
             else resolve();
           });
