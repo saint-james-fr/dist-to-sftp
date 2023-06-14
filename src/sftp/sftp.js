@@ -86,7 +86,7 @@ export async function connectAndPerformOperations(ready) {
       const files = JSON.parse(process.env.OPTION_FILES);
       await uploadFiles(sftp, files, rootPath, remotePath);
       console.log(
-        '📂    Files passes via  -f/--files options uploaded to the server.\n'
+        '📂    Files passed via  -f/--files options uploaded to the server.\n'
       );
     }
 

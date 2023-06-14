@@ -65,17 +65,18 @@ export const uploadFiles = async (sftp, filesArray, directory, remote) => {
   await Promise.all(
     filesArray.map(async (file) => {
       const relativePath = path.join(directory, file);
+      const remotePath = path.join(remote, file);
 
       const stats = fs.statSync(relativePath);
       if (stats.isDirectory()) {
         await new Promise((resolve, reject) => {
-          sftp.mkdir(remote, (err) => {
+          sftp.mkdir(remotePath, (err) => {
             if (err) reject(err);
             else resolve();
           });
         });
 
-        await uploadDirectory(sftp, relativePath, remote);
+        await uploadDirectory(sftp, relativePath, remotePath);
       } else {
         await new Promise((resolve, reject) => {
           let remotePath = path.join(remote, relativePath.split("/").slice(-1)[0]);

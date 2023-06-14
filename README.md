@@ -54,6 +54,7 @@ The following options can be passed as command-line arguments:
 --host: Specifies the SFTP host (requires a value).
 -u, --username: Specifies the SFTP username (requires a value).
 -p, --password: Specifies the SFTP password (requires a value).
+-f, --files: pass multiple paths
 ```
 
 
