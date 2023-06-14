@@ -72,22 +72,21 @@ export async function connectAndPerformOperations(ready) {
     // OPTION --KEEP OR -K
     if (process.env.DELETE_REMOTE !== "false") {
       await cleanDirectory(sftp, remotePath);
-      console.log("🗑️     Existing files in the remote directory removed.\n");
+      console.log("🗑️     Existing files on the server removed.\n");
     }
 
     // UPLOAD DIST FOLDER
     await uploadDirectory(sftp, distPath, remotePath);
     console.log(
-      '📂    Contents of the local "dist" folder uploaded to the remote directory.\n'
+      '📂    Contents of the local "dist" folder uploaded to the server.\n'
     );
 
     // UPLOAD --FILES
     if (process.env.OPTION_FILES) {
       const files = JSON.parse(process.env.OPTION_FILES);
-      console.log(files, "files")
       await uploadFiles(sftp, files, rootPath, remotePath);
       console.log(
-        '📂    Contents of the local "dist" folder uploaded to the remote directory.\n'
+        '📂    Files passes via  -f/--files options uploaded to the server.\n'
       );
     }
 

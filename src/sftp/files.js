@@ -51,8 +51,6 @@ export const uploadDirectory = async (sftp, directory, remote) => {
       } else {
         await new Promise((resolve, reject) => {
           sftp.fastPut(relativePath, remotePath, (err) => {
-            console.log("remotePath from DIRECTORY", remotePath)
-            console.log("relativePath from DIRECTORY", relativePath)
             if (err) reject(err);
             else resolve();
           });
@@ -63,17 +61,12 @@ export const uploadDirectory = async (sftp, directory, remote) => {
 };
 
 export const uploadFiles = async (sftp, filesArray, directory, remote) => {
-  console.log("filesArray", filesArray);
-  console.log("directory", directory);
 
   await Promise.all(
     filesArray.map(async (file) => {
       const relativePath = path.join(directory, file);
 
-      console.log("relativePath", relativePath);
       const stats = fs.statSync(relativePath);
-      console.log("stats", stats);
-      console.log("remote", remote)
       if (stats.isDirectory()) {
         await new Promise((resolve, reject) => {
           sftp.mkdir(remote, (err) => {
@@ -86,8 +79,6 @@ export const uploadFiles = async (sftp, filesArray, directory, remote) => {
       } else {
         await new Promise((resolve, reject) => {
           let remotePath = path.join(remote, relativePath.split("/").slice(-1)[0]);
-          console.log("remotePath FROM FILE", remotePath)
-          console.log("RELATIVE PATH FROM FILE", relativePath)
           sftp.fastPut(relativePath, remotePath, (err) => {
             if (err) reject(err);
             else resolve();

@@ -90,7 +90,6 @@ export const handleOptions = (args) => {
     }
 
     const filesPaths = argsCopy.slice(index, nextArgIndex);
-    console.log("filesPaths", filesPaths);
     // remove the file paths from the args array
     argsCopy.splice(index, nextArgIndex - index);
     // pass the file paths to the filesHandler as an array
