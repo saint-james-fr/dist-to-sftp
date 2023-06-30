@@ -7,7 +7,7 @@
   "scripts": {
     "start": "node src/index.js"
   },
-  "bin": {
+    "bin": {
     "dist-to-sftp": "./src/index.js"
   },
   "keywords": [
