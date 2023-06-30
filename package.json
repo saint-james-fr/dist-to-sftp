@@ -1,6 +1,6 @@
 {
   "name": "dist-to-sftp",
-  "version": "0.1.13",
+  "version": "0.1.14",
   "description": "This package is used to upload a dist folder to a ftp server.",
   "main": "index.js",
   "type": "module",
