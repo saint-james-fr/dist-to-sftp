@@ -42,7 +42,7 @@ export function initializeEnv() {
       }
     } else {
       // Ask if the user wants to create a new .env file
-      console.log(missingEnvFile);
+      console.log(logger.missingEnvFile);
     }
 
     // Prompt the user to enter values for each environment variable
